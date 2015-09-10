@@ -9,12 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.easymock.EasyMock;
-import org.easymock.Mock;
-import org.easymock.TestSubject;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
+import com.webonise.custom.exceptions.ForumException;
 import com.webonise.dao.LoginDao;
 import com.webonise.dao.QuestionDao;
 import com.webonise.models.Question;
@@ -26,16 +23,14 @@ import junit.framework.TestCase;
 public class QuestionServiceImplementaionTest extends TestCase {
 
 	private Question question;
-	
+
 	private Users user;
 
 	private QuestionServiceImplementaion questionService;
 
 	private QuestionDao mockQuestionDao;
-	
+
 	private LoginDao mockLoginDao;
-	
-	
 
 	@Override
 	protected void setUp() {
@@ -56,7 +51,7 @@ public class QuestionServiceImplementaionTest extends TestCase {
 	}
 
 	@Test
-	public void testGetQuestionById() {
+	public void testGetQuestionById() throws ForumException {
 
 		question.setQuestion("what is Spring?");
 
@@ -69,37 +64,33 @@ public class QuestionServiceImplementaionTest extends TestCase {
 	}
 
 	@Test
-	public void testGetAllQuestions() {
+	public void testGetAllQuestions() throws ForumException{
 
 		question.setQuestion("What is JSP?");
-
 		List<Question> questionList = new ArrayList<Question>(1);
 		questionList.add(question);
-
 		expect(mockQuestionDao.findAll()).andReturn(questionList);
-
 		replay(mockQuestionDao);
-		
 		assertEquals("What is JSP?", questionService.getAllQuestions().get(0).getQuestion());
 		verify(mockQuestionDao);
-		
+
 	}
 
 	@Test
 
-	public void testAddQuestion() {
-		
-		expect(mockLoginDao.findByUserName("test")).andReturn(user) ;
-		
-		mockQuestionDao.saveAndFlush(question);
+	public void testAddQuestion() throws ForumException{
+
+		expect(mockLoginDao.findByUserName("test")).andReturn(user);
+
+		mockQuestionDao.saveQuestion(question);
 		EasyMock.expectLastCall().once();
 		EasyMock.replay(mockQuestionDao);
-		EasyMock.verify();		
+		EasyMock.verify();
 	}
-	
+
 	@Test
-	public void testSearchQuestion(){
-	
+	public void testSearchQuestion() throws ForumException {
+
 		question.setQuestion("What is DBMS?");
 		List<Question> questionList = new ArrayList<Question>(1);
 		questionList.add(question);
@@ -107,34 +98,31 @@ public class QuestionServiceImplementaionTest extends TestCase {
 		replay(mockQuestionDao);
 		assertEquals("What is DBMS?", questionService.searchQuestion(question).get(0).getQuestion());
 		verify(mockQuestionDao);
-		
+
 	}
-	
+
 	@Test
-	public void testDeleteQuestion(){
-		
+	public void testDeleteQuestion() throws ForumException{
+
 		mockQuestionDao.delete(5);
 		EasyMock.expectLastCall().once();
 		EasyMock.replay(mockQuestionDao);
 		EasyMock.verify();
 
 	}
-	
+
 	@Test
-	public void testIsQualified(){
-		
+	public void testIsQualified() throws ForumException{
+
 		user.setUsername("test");
 		question.setUser(user);
 		expect(mockQuestionDao.findByQuestionId(2)).andReturn(question);
-		replay(mockQuestionDao);		
-		
-		
+		replay(mockQuestionDao);
+
 		assertEquals(true, questionService.isQualified(2, user.getUsername()));
-		
+
 		EasyMock.verify();
-		
-		
-		
+
 	}
 
 }

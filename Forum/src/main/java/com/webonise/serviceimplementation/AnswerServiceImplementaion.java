@@ -1,13 +1,9 @@
 package com.webonise.serviceimplementation;
 
-import java.util.List;
-
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.webonise.custom.exceptions.ForumException;
 import com.webonise.dao.AnswerDao;
 import com.webonise.dao.LoginDao;
 import com.webonise.dao.QuestionDao;
@@ -26,74 +22,61 @@ public class AnswerServiceImplementaion implements AnswerService {
 	@Autowired
 	private LoginDao loginDao;
 
-	private static final Logger logger = Logger.getLogger(AnswerServiceImplementaion.class);
-
-	// @Autowired
-	// private CacheService cacheService;
-
-
 	@Override
-	public void addAnswer(Answers answer, long questionId, String userName) {
-		// TODO Auto-generated method stub
+	public void addAnswer(Answers answer, long questionId, String userName) throws ForumException {
 
 		answer.setUser(loginDao.findByUserName(userName));
-
 		answer.setQuestion(questionDao.findByQuestionId(questionId));
-		answerDao.saveAndFlush(answer);
-
-		// Question question = (Question) cacheService.read("QUESTION",
-		// questionId);
-
-		// question.getAnswers().add(answers);
-
-		// cacheService.save(question);
-
+		
+		if(answer.getQuestion() == null )
+		{
+			throw new ForumException("Error during setting Question");
+			
+		}
+		else if (answer.getUser() == null) {
+			
+			throw new ForumException("Error during setting User");
+		}
+		
+		answerDao.saveAnser(answer);
 	}
 
 	@Override
-	public void deleteAnswer(long answerId) {
-		// TODO Auto-generated method stub
-
-		answerDao.findOne(answerId).getQuestion().getAnswers().remove(answerDao.findByAnswerId(answerId));
+	public void deleteAnswer(long answerId) throws ForumException {
 
 		answerDao.delete(answerId);
-
 	}
 
-	public boolean updateAnswer(long answerId, String updatedAnswer) {
-		// TODO Auto-generated method stub
+	public boolean updateAnswer(long answerId, String updatedAnswer) throws ForumException {
 
 		Answers answer = answerDao.findByAnswerId(answerId);
+		
+		if(answer == null ){
+			
+			throw new ForumException("Answer Does not exists");
+		}
+		
 		answer.setAnswer(updatedAnswer);
 		answerDao.saveAndUpdate(answer);
 		return true;
-
-		// long questionId = answer.getQuestion().getQuestionId();
-		// Question question = (Question) cacheService.read("QUESTION",
-		// questionId);
-
-		// question.getAnswers().add(answers);
-
-		// cacheService.save(question);
-
 	}
 
 	@Override
-	public boolean isQualified(long answerId, String userName) {
-		// TODO Auto-generated method stub
+	public boolean isQualified(long answerId, String userName) throws ForumException{
 
 		if (answerDao.findByAnswerId(answerId).getUser().getUsername().equals(userName)) {
 			return true;
 		} else
 			return false;
 	}
-	
+
 	public void setAnswerDao(AnswerDao mockDao) {
 
 		this.answerDao = mockDao;
 	}
 
 	public void setQuestionDao(QuestionDao mockQuestionDao) {
+
 		this.questionDao = mockQuestionDao;
 	}
 

@@ -12,75 +12,112 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.webonise.custom.exceptions.ForumException;
 import com.webonise.models.Answers;
 import com.webonise.service.AnswerService;
 
 @Controller
 public class AnswerController {
 
-	private static final Logger logger = Logger.getLogger(AnswerController.class);
+	private static final Logger LOGGER = Logger.getLogger(AnswerController.class);
 
-	private String userName="";
+	private String userName;
+
+	private String message;
+
 	@Autowired
-	AnswerService answerService;
+	private AnswerService answerService;
 
 	@ModelAttribute
 	public void getUserName(Model model) {
+
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		userName = authentication.getName();
+
+		if (authentication != null) {
+
+			userName = authentication.getName();
+		}
 		model.addAttribute("userName", userName);
-		model.addAttribute("answer", new Answers());
 	}
 
 	@RequestMapping(value = "/question/{questionId}/answers/", method = RequestMethod.POST)
-	public String addAnswer(@PathVariable("questionId") long questionId, @ModelAttribute("answer") Answers answer,
+	public String addAnswer(@PathVariable("questionId") long questionId, @ModelAttribute("answers") Answers answer,
 			Model model, @RequestHeader(value = "referer", required = false) final String url) {
 
-		
-		answerService.addAnswer(answer, questionId, userName);
-		return "redirect:" + url;
-	}
+		try {
+			answerService.addAnswer(answer, questionId, userName);
+			message = "Answer Added Successfully !";
 
-	@RequestMapping(value="/question/{questionId}/answers/{answerId}",  method = RequestMethod.DELETE)
-	public String deleteAnswer(@PathVariable("answerId") long answerId,
-			@ModelAttribute("answer") Answers answer,
-			@RequestHeader(value = "referer", required = false) final String url) {
-		
-		
-		if (answerService.isQualified(answerId, userName) || userName.equals("admin")) {
-			
-			logger.info("inside if");
-			answerService.deleteAnswer(answerId);
+		} catch (ForumException e) {
+
+			message = e.getMessage();
+		} catch (Exception e) {
+			message = "Something went wrong please try again !";
+		}
+		model.addAttribute("message", message);
+		int index = url.indexOf('?') - 1;
+		if (index > 0) {
+			String newUrl = url.substring(0, index + 1);
+
+			return "redirect:" + newUrl;
+		} else
 			return "redirect:" + url;
-		}
-
-		else {
-			
-			logger.info("inside else");
-			return "redirect:/403";
-		}
-		
 	}
 
-	@RequestMapping(value="/question/{questionId}/answers/{answerId}",  method = RequestMethod.PUT)
-	public String updateAnswer(@PathVariable("answerId") long answerId,@PathVariable("questionId") long questionId, Model model, @ModelAttribute("answer") Answers answer) {
+	@RequestMapping(value = "/question/{questionId}/answers/{answerId}", method = RequestMethod.DELETE)
+	public String deleteAnswer(@PathVariable("answerId") long answerId,
+			@RequestHeader(value = "referer", required = false) final String url, Model model) {
 
-		
-		
+		try {
+			if (answerService.isQualified(answerId, userName) || userName.equals("admin")) {
 
-		if (answerService.isQualified(answerId, userName) || userName.equals("admin")) {
+				answerService.deleteAnswer(answerId);
+				message = "Answer Deleted Successfully !";
+				model.addAttribute("message", message);
+				int index = url.indexOf('?') - 1;
+				if (index > 0) {
+					String newUrl = url.substring(0, index + 1);
+					return "redirect:" + newUrl;
+				} else
+					return "redirect:" + url;
+			} else {
+				return "redirect:/403";
+			}
+		} catch (ForumException e) {
 			
-			answerService.updateAnswer(answerId, answer.getAnswer());
-			logger.info("Answer id " + answerId + " with answer " + answer.getAnswer() + " is now entered" );
-			
-			return "redirect:/";
-		}
-
-		else {
-			
-			return "redirect:/403";
-		}
+			message = "Something went wrong please try again !";
+			model.addAttribute("message", message);
+			return "redirect:" + url;
+		} 
 	}
 
-	
+	@RequestMapping(value = "/question/{questionId}/answers/{answerId}", method = RequestMethod.PUT)
+	public String updateAnswer(@PathVariable("answerId") long answerId, Model model,
+			@ModelAttribute("answer") Answers answer,
+			@RequestHeader(value = "referer", required = false) final String url) throws ForumException {		
+		
+		try {
+			if (answerService.isQualified(answerId, userName) || userName.equals("admin")) {
+
+				answerService.updateAnswer(answerId, answer.getAnswer());
+				message = "Answer Updated Successfully !";
+				model.addAttribute("message", message);
+				int index = url.indexOf('?') - 1;
+				if (index > 0) {
+					String newUrl = url.substring(0, index + 1);
+					return "redirect:" + newUrl;
+				} else
+					return "redirect:" + url;
+			} else {
+				return "redirect:/403";
+			}
+		} catch (ForumException e) {
+			
+			message = "Something went wrong please try again !";
+			model.addAttribute("message", message);
+			return "redirect:" + url;
+		} 
+		
+		
+	}
 }

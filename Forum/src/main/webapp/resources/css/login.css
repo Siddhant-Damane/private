@@ -1,0 +1,98 @@
+* {
+	margin: 0px;
+	padding: 0px;
+	text-decoration: none;
+}
+
+.container {
+	width: 940px;
+	margin: 0 auto;
+	height: inherit;
+}
+
+header {
+	background-color: #222222;
+	height: 50px;
+	text-align: center;
+}
+
+.banner{
+	margin: 100px auto;
+	background-color: #CEECF5;
+	width:320px;
+	height:300px;
+	text-align: center;
+}
+
+.toplogo a {
+	margin-top: 8px;
+	float: left;
+	display: block;
+	color: #000000;
+	font-size: 18px;
+	padding: 7px 10px;
+	background-color: #efefef;
+}
+
+
+
+
+tr {
+	margin: 10px;
+	border-bottom-style: dotted;
+	border-bottom-width: thin;
+	border-bottom-color: #000000;
+}
+
+td {
+	margin: 10px;
+	padding: 10px;
+}
+
+input[type='text'], input[type='password'] {
+	width: 150px;
+	height: 24px;
+	border-radius: 5px;
+	border: 1px solid #CCC;
+	font-weight: 200;
+	font-size: 15px;
+	font-family: Verdana;
+	box-shadow: 1px 1px 5px #CCC;
+}
+
+input[type='text']:hover, input[type='password']:hover {
+	width: 150px;
+	height: 24px;
+	border-radius: 5px;
+	border: 1px solid #aaa;
+	color: #222222;
+	font-weight: 200;
+	font-size: 15px;
+	font-family: Verdana;
+	box-shadow: 1px 1px 5px #CCC;
+}
+
+input[type='submit'] {
+	width: 150px;
+	height: 24px;
+}
+
+a {
+	color: #151515;
+	font-weight: bold;
+	font-size: 20px;
+}
+
+form input {
+	margin: 10px 0;
+}
+
+a:hover {
+	color: #A9D0F5;
+	text-decoration: none;
+}
+
+.clear {
+	float: none;
+	clear: both;
+}

@@ -3,15 +3,14 @@
        http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	version="2.5">
 
-	<display-name>Sample Spring Maven Project</display-name>
-	<!-- Spring MVC -->
-
 	<servlet>
 		<servlet-name>mvc-dispatcher</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
-			<param-value>/WEB-INF/spring/appServlet/mvc-dispatcher-servlet.xml</param-value>
+			<param-value>/WEB-INF/spring/appServlet/mvc-dispatcher-servlet.xml
+			
+			</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
@@ -27,9 +26,8 @@
 
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>
-	        /WEB-INF/spring/root-context.xml,  
-            /WEB-INF/spring/appServlet/mvc-dispatcher-servlet.xml,
+		<param-value> 
+            /WEB-INF/spring/appServlet/root-servlet.xml,
             /WEB-INF/spring-security.xml  
         </param-value>
 

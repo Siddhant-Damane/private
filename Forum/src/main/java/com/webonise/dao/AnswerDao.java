@@ -2,23 +2,21 @@ package com.webonise.dao;
 
 import java.util.List;
 
-
-import org.springframework.stereotype.Repository;
+import com.webonise.custom.exceptions.ForumException;
 import com.webonise.models.Answers;
-
 
 public interface AnswerDao  {
 
-	List<Answers> findByQuestionId(long questionId);
+	List<Answers> findByQuestionId(long questionId) throws ForumException;
 
-	Answers findByAnswerId(long answerId);
+	Answers findByAnswerId(long answerId)throws ForumException;
 
-	void saveAndFlush(Answers answer);
+	void saveAnser(Answers answer)throws ForumException;
 
-	Answers findOne(long answerId);
+	Answers findOne(long answerId)throws ForumException;
 
-	void delete(long answerId);
+	void delete(long answerId)throws ForumException;
 
-	void saveAndUpdate(Answers answer);
+	void saveAndUpdate(Answers answer)throws ForumException;
 
 }

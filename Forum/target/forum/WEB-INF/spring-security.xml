@@ -12,10 +12,7 @@ http://www.springframework.org/schema/security/spring-security-3.2.xsd">
   <intercept-url pattern="/question/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"  method="DELETE" />
   <intercept-url pattern="/question/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"  method="PUT" />
   <intercept-url pattern="/question/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"  method="POST" />
- <!--  <intercept-url pattern="/question/*/answers/*" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"  method="DELETE" />
-  <intercept-url pattern="/question/*/answers/*" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"  method="POST" />
-  <intercept-url pattern="/question/*/answers/*" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"  method="PUT" />
-   -->
+ 
 
   <!-- access denied page -->
   <access-denied-handler error-page="/403" />

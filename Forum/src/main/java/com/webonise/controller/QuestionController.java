@@ -10,24 +10,24 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.webonise.custom.exceptions.ForumException;
 import com.webonise.models.Answers;
 import com.webonise.models.Question;
 import com.webonise.service.AnswerService;
 import com.webonise.service.QuestionService;
 
 @Controller
-
 public class QuestionController {
 
-	private static final Logger logger = Logger.getLogger(QuestionController.class);
-
 	private String userName = "";
+	private String message = "";
+
+	private static final Logger LOGGER = Logger.getLogger(AnswerController.class);
 
 	@Autowired
 	AnswerService answerService;
@@ -39,62 +39,117 @@ public class QuestionController {
 	public void getUserName(Model model) {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		userName = authentication.getName();
+
+		if (authentication != null) {
+
+			userName = authentication.getName();
+		}
 		model.addAttribute("userName", userName);
 	}
 
 	@RequestMapping(value = "/question", method = RequestMethod.POST)
 	public String addQuestion(@ModelAttribute("question") Question question, Model model) {
 
-		questionService.addQuestion(question, userName);
+		try {
+			questionService.addQuestion(question, userName);
+
+			message = "Question Added Successfully !";
+
+		} catch (ForumException e) {
+			message = "Something went wrong please try again !";
+			
+		}
+		model.addAttribute("message", message);
+
 		return "redirect:/";
 	}
 
-	@RequestMapping(value="/question",  method = RequestMethod.GET)
+	@RequestMapping(value = "/question", method = RequestMethod.GET)
 	public ModelAndView displayAllQuestions(Model model) {
 
-		List<Question> questionList = questionService.getAllQuestions();
+		List<Question> questionList = null;
+		try {
+			questionList = questionService.getAllQuestions();
+			message = "";
+
+		} catch (ForumException e) {
+			message = "Something went wrong please try again !";
+		}
+		model.addAttribute("message", message);
 
 		return new ModelAndView("listAllQuestions", "questions", questionList);
 	}
 
-	@RequestMapping(value="/question/{questionId}",  method = RequestMethod.GET)
-	public ModelAndView displayQuestion(@PathVariable("questionId") int questionId, Model model) {
+	@RequestMapping(value = "/question/{questionId}", method = RequestMethod.GET)
+	public String displayQuestion(@PathVariable("questionId") int questionId, Model model) {
 
-		Question question = questionService.getQuestionById(questionId);
-		model.addAttribute("questionId", questionId);
-		return new ModelAndView("displayQuestion", "question", question);
+		
+		
+		try{
+			Question question = questionService.getQuestionById(questionId);
+			model.addAttribute("questionId", questionId);
+			model.addAttribute("question", question);
+			return "displayQuestion";
+		
+		} 
+		catch(ForumException e)
+		{
+			LOGGER.error(e.getMessage(), e);
+			model.addAttribute("message",e.getMessage());
+			return "404";	
+		}
 	}
 
-	@RequestMapping(value="/question/{questionId}/answers",  method = RequestMethod.GET)
-	public ModelAndView displayMyAnswer(@PathVariable("questionId") long questionId, Model model) {
+	@RequestMapping(value = "/question/{questionId}/answers", method = RequestMethod.GET)
+	public String displayAnswer(@PathVariable("questionId") long questionId, Model model,
+			@ModelAttribute Answers answers, @RequestParam(value = "message", required = false) String alert) {
 
-		model.addAttribute("question", questionService.getQuestionById(questionId));
-
-		model.addAttribute("answer", new Answers());
-		return new ModelAndView("displayAnswer");
+		try {
+			model.addAttribute("question", questionService.getQuestionById(questionId));
+			model.addAttribute("message", alert);
+			return "displayAnswer";
+		} catch (ForumException e) {
+			LOGGER.error(e.getMessage(), e);
+			return "404";
+			
+		}
+		
 	}
 
 	@RequestMapping(value = "/searchQuestion", method = RequestMethod.GET)
 	public String searchQuestion(@ModelAttribute("question") Question question, Model model) {
 
-		List<Question> questions = questionService.searchQuestion(question);
-		model.addAttribute("questions", questions);
-		model.addAttribute("userQuestion", question.getQuestion());
-		return "searchedQuestion";
+		try {
+			List<Question> questions = questionService.searchQuestion(question);
+			model.addAttribute("questions", questions);
+			model.addAttribute("userQuestion", question.getQuestion());
+			return "searchedQuestion";
+		} catch (ForumException e) {
+			// TODO Auto-generated catch block
+			LOGGER.error(e.getMessage(),e);
+			return "404";
+		}
 	}
 
-	@RequestMapping(value = "/question/{questionId}",  method = RequestMethod.DELETE)
-	public String deleteQuestion(@PathVariable("questionId") long questionId ) {
+	@RequestMapping(value = "/question/{questionId}", method = RequestMethod.DELETE)
+	public String deleteQuestion(@PathVariable("questionId") long questionId, Model model) throws ForumException {
 
 		if (questionService.isQualified(questionId, userName) || userName.equals("admin")) {
-			questionService.deleteQuestion(questionId);
-			return "redirect:/";
-		}
-		else {
 
+			try {
+				questionService.deleteQuestion(questionId);
+				message = "Question Deleted Successfully !";
+
+			}
+			
+			catch (ForumException e) {
+				message = "Something went wrong please try again !";
+			}
+			model.addAttribute("message", message);
+
+			return "redirect:/";
+		} else {
 			return "redirect:/403";
 		}
 	}
-
 }

@@ -1,8 +1,8 @@
 package com.webonise.models;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,14 +12,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import com.webonise.cache.management.cache.Cachable;
 
 
 @Entity
 @Table(name = "questions")
-public class Question implements Serializable, Cachable{
+public class Question{
 
-	private static final long serialVersionUID = 4392712718828502723L;
+	
 
 	public static final String OBJECT_KEY = "QUESTION";
 	
@@ -27,8 +26,6 @@ public class Question implements Serializable, Cachable{
 	@GeneratedValue
 	@Column(name = "questionid")
 	private long questionId;
-
-
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	 @JoinColumn(name = "userid", nullable = false)
@@ -64,8 +61,6 @@ public class Question implements Serializable, Cachable{
 		this.questionId = questionId;
 	}
 
-	
-
 	public String getQuestion() {
 		return question;
 	}
@@ -73,15 +68,4 @@ public class Question implements Serializable, Cachable{
 	public void setQuestion(String question) {
 		this.question = question;
 	}
-
-	 @Override
-	 public long getKey() {
-	  return getQuestionId();
-	 }
-
-	 @Override
-	 public String getObjectKey() {
-	  return OBJECT_KEY;
-	 }
-
 }
