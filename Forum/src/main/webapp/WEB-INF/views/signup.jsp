@@ -1,57 +1,37 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<!DOCTYPE html>
 <html>
 <head>
-<spring:url value="/resources/css/login.css" var="mainCss" />
-<link href="${mainCss}" rel="stylesheet" />
-<title>SignUp</title>
-
-<script type="text/javascript">
-        function blockSpecialChar(e) {
-            var k = e.keyCode;
-            return ((k > 64 && k < 91) || (k > 96 && k < 123) || k == 8   || (k >= 48 && k <= 57));
-        }
-    </script>
+<title>Login</title>
 </head>
 <body>
-	<header>
-		<div class="container">
-			<div class="toplogo">
-				<a class="name" href="/forum">Home</a>
-			</div>
-
+	<div align="center">
+		<br /> <br /> <br />
+		<div align="right">
+			<a href="/forum">Home</a>
 		</div>
-	</header>
-
-	<div class="container">
-
-		<div class="banner">
-
-			<form:form method="POST" action="/forum/signupprocess"
-				modelAttribute="users">
-
-				<h3>Forum Sign Up</h3>
-				<span style="color: red">${message}</span>
-				<table>
+		<div style="border: 1px solid black; width: 300px; padding-top: 10px;">
+			<br /> Please enter your username and password to Signup ! <br />
+			<table>
+				<form:form method="POST" action="/forum/signupprocess"
+					modelAttribute="user">
 					<tr>
-						<td>Username</td>
+						<td><form:label path="">User Name</form:label></td>
 						<td><form:input path="username" type="text"
-								placeholder="User" required="required" onkeypress="return blockSpecialChar(event)" maxlength="10"/></td>
+								placeholder="User" required="required" /></td>
 					</tr>
 					<tr>
-						<td>Password</td>
-						<td><form:input path="password" type="password"
-								placeholder="Password" required="required" maxlength="10"/></td>
+		
+						<td><form:label path="">Password</form:label></td>
+						<td><form:input path="password" type="password" placeholder="Password"
+							required="required" />
+						</td>
 					</tr>
 					<tr>
-						<td>&nbsp;</td>
-						<td><form:input type="submit" value=" Sign Up " path=""  /></td>
+						<td><form:input type="submit" value=" Sign Up " path="" /></td>
 					</tr>
-				</table>
-			</form:form>
-
+				</form:form>
+			</table>
 		</div>
 	</div>
 

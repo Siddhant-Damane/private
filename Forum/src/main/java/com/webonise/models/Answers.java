@@ -1,5 +1,7 @@
 package com.webonise.models;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,9 +14,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "answers")
 
-public class Answers {
+public class Answers implements Serializable{
 
-	
+	private static final long serialVersionUID = -1104332242612789528L;
 
 	@Id
 	@GeneratedValue
@@ -64,4 +66,6 @@ public class Answers {
 	public void setAnswer(String answer) {
 		this.answer = answer;
 	}
+
+
 }

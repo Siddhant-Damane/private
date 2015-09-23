@@ -1,15 +1,21 @@
 package com.webonise.service;
 
-import com.webonise.custom.exceptions.ForumException;
+import java.util.List;
+
 import com.webonise.models.Answers;
 
 public interface AnswerService {
 
-	public void addAnswer(Answers answer, long questionId, String userName) throws ForumException;
+	public List<Answers> getAsnwerByQuestionId(long questionId);
 
-	public void deleteAnswer(long answerId) throws ForumException;
+	public void addAnswer(Answers answer, long questionId, String userName);
 
-	boolean updateAnswer(long answerId, String updatedAnswer) throws ForumException;
+	public void deleteAnswer(long answerId);
 
-	public boolean isQualified(long answerId, String userName) throws ForumException;
+	boolean updateAnswer(long answerId, String updatedAnswer);
+
+	public boolean isQualified(long answerId, String userName);
+	
+	
+
 }

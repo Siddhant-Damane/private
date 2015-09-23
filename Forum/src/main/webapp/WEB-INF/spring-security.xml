@@ -8,15 +8,16 @@ http://www.springframework.org/schema/security/spring-security-3.2.xsd">
  <!-- enable use-expressions -->
  
   <http auto-config="true" use-expressions="true">
-  
-  <intercept-url pattern="/question/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"  method="DELETE" />
-  <intercept-url pattern="/question/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"  method="PUT" />
-  <intercept-url pattern="/question/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"  method="POST" />
- 
+  <intercept-url pattern="/admin**" access="hasRole('ROLE_ADMIN')" />
+  <intercept-url pattern="/user**" access="hasRole('ROLE_USER')" />
+  <intercept-url pattern="/question/{questionId}/answers/addAnswer" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')" />
+  <intercept-url pattern="/deleteAnswer/*" access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')" />
+  <intercept-url pattern="/updateAnswer/*" access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')" />
+   <intercept-url pattern="/addQuestion" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')" />
+    <intercept-url pattern="/deleteQuestion/*" access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')" />
 
   <!-- access denied page -->
   <access-denied-handler error-page="/403" />
-  
   <form-login login-page="/login" authentication-failure-url="/login?error"
    username-parameter="username" password-parameter="password" />
   <logout logout-success-url="/login?logout" />

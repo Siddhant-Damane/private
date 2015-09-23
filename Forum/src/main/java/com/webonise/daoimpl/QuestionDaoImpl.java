@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -13,110 +12,87 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.webonise.custom.exceptions.ForumException;
 import com.webonise.dao.QuestionDao;
 import com.webonise.models.Question;
 
 @Repository("questionDao")
 public class QuestionDaoImpl implements QuestionDao {
 
-	final static Logger LOGGER = Logger.getLogger(QuestionDaoImpl.class);
+	final static Logger logger = Logger.getLogger(QuestionDaoImpl.class);
 
 	@Autowired
 	SessionFactory sessionFactory;
 
 	Session session = null;
-	Transaction transaction = null;
+	Transaction tx = null;
 
 	@Override
-	public Question findByQuestionId(long questionId) throws ForumException {
+	public Question findByQuestionId(long questionId) {
+		// TODO Auto-generated method stub
 
-		Question question = null;
-		try {
-			session = sessionFactory.openSession();
-			question = (Question) session.get(Question.class, questionId);
-			
-		} catch (HibernateException e) {
-			throw new ForumException(e);
-		}
-		finally {
-			session.close();
-		}
+		session = sessionFactory.openSession();
+		tx = session.getTransaction();
+		session.beginTransaction();
+		Question question = (Question) session.get(Question.class, questionId);
+
+		tx.commit();
+		//logger.info("Question found is " + question.getQuestion());
+
 		return question;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public List<Question> findByQuestion(String question)throws ForumException {
+	public List<Question> findByQuestion(String question) {
+		// TODO Auto-generated method stub
 
+		session = sessionFactory.openSession();
+		tx = session.getTransaction();
+		session.beginTransaction();
+		Criteria criteria = session.createCriteria(Question.class);
+		criteria.add(Restrictions.like("question", "%" + question+ "%"));
 		
-		List<Question> questionlist = null;
-		try {
-			session = sessionFactory.openSession();
-			
-			questionlist = session.createQuery("FROM Question WHERE question LIKE '%"+question+"%'").list();
-			LOGGER.info("Question list  retrived is " + questionlist);
-			
-		} catch (HibernateException e) {
-			throw new ForumException(e);
-		}
-		finally {
-			session.close();
-		}
+		ArrayList<Question> questionlist = (ArrayList<Question>) criteria.list();
+		tx.commit();
+
+		logger.info("Question list  retrived is " + questionlist);
 		return questionlist;
 
 	}
 
 	@Override
-	public List<Question> findAll() throws ForumException{
-
-		ArrayList<Question> questionlist = null;
-		try {
-			
-			session = sessionFactory.openSession();
-			questionlist = (ArrayList<Question>) session.createQuery("FROM Question").list();
-
-			
-		} catch (HibernateException e) {
-			throw new ForumException(e);
-		}
-		finally {
-			session.close();
-		}
+	public List<Question> findAll() {
+		// TODO Auto-generated method stub
+		session = sessionFactory.openSession();
+		tx = session.getTransaction();
+		session.beginTransaction();
+		ArrayList<Question> questionlist = (ArrayList<Question>) session.createCriteria(Question.class)
+				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+		tx.commit();
 		return questionlist;
 	}
 
 	@Override
-	public void saveQuestion(Question question) throws ForumException{
-		try {
-			session = sessionFactory.openSession();
-			transaction = session.getTransaction();
-			session.beginTransaction();
-			session.save(question);
-			transaction.commit();
-		} catch (HibernateException e) {
-			if (transaction != null)
-				transaction.rollback();
-			throw new ForumException(e);
-		} finally {
-			session.close();
-		}
+	public void saveAndFlush(Question question) {
+		// TODO Auto-generated method stub
+
+		session = sessionFactory.openSession();
+		tx = session.getTransaction();
+		session.beginTransaction();
+		session.save(question);
+		tx.commit();
+
 	}
 
 	@Override
-	public void delete(long questionId) throws ForumException{
-		try {
-			session = sessionFactory.openSession();
-			transaction = session.getTransaction();
-			session.beginTransaction();
-			session.delete(session.get(Question.class, questionId));
-			transaction.commit();
-		} catch (HibernateException e) {
-			if (transaction != null)
-				transaction.rollback();
-			throw new ForumException(e);
-		} finally {
-			session.close();
-		}
+	public void delete(long questionId) {
+		// TODO Auto-generated method stub
+
+		session = sessionFactory.openSession();
+		tx = session.getTransaction();
+		session.beginTransaction();
+		session.delete(session.get(Question.class, questionId));
+		tx.commit();
+
 	}
+
 }

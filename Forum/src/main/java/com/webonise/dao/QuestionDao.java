@@ -2,19 +2,22 @@ package com.webonise.dao;
 
 import java.util.List;
 
-import com.webonise.custom.exceptions.ForumException;
 import com.webonise.models.Question;
 
 public interface QuestionDao {
 
-	Question findByQuestionId(long questionId)throws ForumException;
+	Question findByQuestionId(long questionId);
 
-	List<Question> findByQuestion(String question)throws ForumException;
+	
+	List<Question> findByQuestion(String question);
 
-	List<Question> findAll()throws ForumException;
 
-	void saveQuestion(Question question)throws ForumException;
+	List<Question> findAll();
 
-	void delete(long questionId)throws ForumException;
+
+	void saveAndFlush(Question question);
+
+
+	void delete(long questionId);
 
 }
