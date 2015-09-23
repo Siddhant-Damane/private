@@ -31,6 +31,12 @@ public class AnswerServiceImplementaion implements AnswerService {
 	// @Autowired
 	// private CacheService cacheService;
 
+	@Override
+	public List<Answers> getAsnwerByQuestionId(long questionId) {
+		return null;
+		// TODO Auto-generated method stub
+
+	}
 
 	@Override
 	public void addAnswer(Answers answer, long questionId, String userName) {
@@ -60,10 +66,15 @@ public class AnswerServiceImplementaion implements AnswerService {
 
 	}
 
+	@Override
 	public boolean updateAnswer(long answerId, String updatedAnswer) {
 		// TODO Auto-generated method stub
 
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String userName = authentication.getName();
+
 		Answers answer = answerDao.findByAnswerId(answerId);
+
 		answer.setAnswer(updatedAnswer);
 		answerDao.saveAndUpdate(answer);
 		return true;
@@ -83,23 +94,11 @@ public class AnswerServiceImplementaion implements AnswerService {
 		// TODO Auto-generated method stub
 
 		if (answerDao.findByAnswerId(answerId).getUser().getUsername().equals(userName)) {
+			System.out.println("ans user is " + answerDao.findByAnswerId(answerId).getUser().getUsername() + "  logged in user is "+ userName);
 			return true;
 		} else
+			System.out.println("ans user is " + answerDao.findByAnswerId(answerId).getUser().getUsername() + "  logged in user is "+ userName);
 			return false;
-	}
-	
-	public void setAnswerDao(AnswerDao mockDao) {
-
-		this.answerDao = mockDao;
-	}
-
-	public void setQuestionDao(QuestionDao mockQuestionDao) {
-		this.questionDao = mockQuestionDao;
-	}
-
-	public void setLoginDao(LoginDao mockLoginDao) {
-
-		this.loginDao = mockLoginDao;
 	}
 
 }

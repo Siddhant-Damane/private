@@ -1,7 +1,7 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -32,10 +32,9 @@
 				<th>${question.question}
 					<div>
 						<b>Asked By</b>: ${question.user.username}
-					</div> <form:form method="DELETE"
-						action="/forum/question/${question.questionId}">
-						<input type="submit" value="Delete Question">
-					</form:form>
+					</div>
+					 <a	href="/forum/deleteQuestion/${question.questionId}"><button
+							name="delete">Delete Question</button></a>
 				</th>
 
 			</tr>
@@ -43,33 +42,20 @@
 		<tbody>
 			<c:forEach var="answer" items="${question.answers}">
 				<tr>
-					<td>${answer.answer}<br>
-						<div>
-							<b>Posted By</b>: ${answer.user.username}
-						</div> <form:form method="DELETE"
-							action="/forum/question/${question.questionId}/answers/${answer.answerId}">
-							<input type="submit" value="Delete Answer">
-					
-					
-						</form:form> 
-						
-						
-						<form:form method="PUT"
-							action="/forum/question/${question.questionId}/answers/${answer.answerId}"
-							commandName="answer">
-							<form:input path="answer" type="text"
-								placeholder="Enter Your Answer" required="required" />
-							
-							<input type="submit" value="Update Answer"  />
-						</form:form>
-						
-						
+					<td>${answer.answer}<br> 
+					<div><b>Posted By</b>: ${answer.user.username}</div>
+					<a
+						href="/forum/deleteAnswer/${answer.answerId}">
+							<button name="delete">Delete Answer</button>
+					</a> <a href="/forum/updateAnswer/${answer.answerId}"><button>Update</button></a>
+
 					</td>
+
 				</tr>
 			</c:forEach>
 			<tr>
 				<td><form:form method="POST"
-						action="/forum/question/${question.questionId}/answers/"
+						action="/forum/question/${question.questionId}/answers/addAnswer"
 						commandName="answer">
 						<form:input path="answer" type="text"
 							placeholder="Enter Your Answer" required="required" />

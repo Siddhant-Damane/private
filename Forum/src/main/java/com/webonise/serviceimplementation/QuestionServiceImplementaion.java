@@ -105,16 +105,8 @@ public class QuestionServiceImplementaion implements QuestionService {
 
 			return true;
 		} else
-		{
-			return false;
-		}
-	}
 
-	public void setLoginDao(LoginDao mockLoginDao) {
-		// TODO Auto-generated method stub
-		
-		this.loginDao = mockLoginDao;
-		
+			return false;
 	}
 
 }

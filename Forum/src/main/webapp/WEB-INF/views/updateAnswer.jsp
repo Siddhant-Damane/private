@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -28,16 +28,17 @@
 
 
 
+	
+			<form:form method="POST"
+				action="/forum/updateAnswerWithAnswerId/${answerId}"
+				commandName="answer">
+				<form:input path="answer" type="text"
+					placeholder="Enter Your Answer" required="required" />
+				<form:input type="submit" value="Update Answer" path="" />
+			</form:form>
+		
 
-	<form:form method="PUT"
-		action="/forum/question/${questionId}/answers/${answerId}"
-		commandName="answer">
-		<form:input path="answer" type="text" placeholder="Enter Your Answer"
-			required="required" />
-		<form:input type="submit" value="Update Answer" path="" />
-	</form:form>
-
-
+		
 
 </body>
 </html>

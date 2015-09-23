@@ -2,7 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page import="java.util.HashMap"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<!DOCTYPE html>
 <html>
 <head>
 <title>Forum</title>
@@ -16,7 +15,6 @@
 	<c:choose>
 		<c:when test="${userName=='anonymousUser'}">
 			<a href="/forum/login">Login</a>
-			<a href="/forum/signup">Signup</a>
 		</c:when>
 		<c:otherwise>
 			<h2>Logged In As : ${userName}</h2>
@@ -31,7 +29,7 @@
 		<tbody>
 
 			<tr>
-				<td><form:form method="POST" action="/forum/question"
+				<td><form:form method="POST" action="/forum/addQuestion"
 						modelAttribute="question">
 						<form:input path="question" type="text" placeholder="Question"
 							required="required" />
@@ -39,17 +37,17 @@
 					</form:form></td>
 			</tr>
 			<tr>
-				<td><form:form method="GET" action="/forum/searchQuestion"
+				<td><form:form method="POST" action="/forum/searchQuestion"
 						commandName="question">
 						<form:input path="question" type="text" placeholder="Question"
 							required="required" />
 						<form:input type="submit" value="Search Question" path="" />
 					</form:form>
-					
+					<div style="color: red">${message}</div>
 				<td>
 			</tr>
 			<tr>
-				<td><form:form method="GET" action="/forum/question"
+				<td><form:form method="POST" action="/forum/question"
 						commandName="question">
 						<form:input type="submit" value="Show All Questions" path="" />
 					</form:form>
@@ -70,40 +68,26 @@
 					<tr>
 						<td><a href="/forum/question/${entry.questionId}/answers">Question
 								: ${entry.question}</a><br>
-							<div>
-								<b>Asked By:</b> ${entry.user.username}
-							</div> 
-							
-							
-							<form:form method="DELETE"
-								action="/forum/question/${entry.questionId}">
-								<input type="submit" value="Delete Question">
-							</form:form>
-							
-							
-							
-							 <br> <b> Answers </b>: <br> <c:forEach
-								items="${entry.answers}" var="answer">${answer.answer}<br>
-								<div>
-									<b>Posted By:</b> ${answer.user.username}
-								</div>
-
-								<form:form
-									action="/forum/question/${entry.questionId}/answers/${answer.answerId}"
-									method="DELETE" commandName="answer">
-									<form:input path="" type="submit" value="Delete Answer"></form:input>
-								</form:form>
-
+							<div><b>Asked By:</b> ${entry.user.username}</div> <a
+							href="/forum/deleteQuestion/${entry.questionId}"><button
+									name="delete">Delete Question</button></a> <br> <b>
+								Answers </b>: <br> <c:forEach items="${entry.answers}"
+								var="answer">${answer.answer}<br>
+								<div><b>Posted By:</b> ${answer.user.username}</div>
+								<a href="/forum/deleteAnswer/${answer.answerId}"><button
+										name="delete">Delete Answer</button></a>
 								<br>
 
-							</c:forEach> <form:form method="POST"
-								action="/forum/question/${entry.questionId}/answers/"
+							</c:forEach> 
+							<form:form method="POST"
+								action="/forum/question/${entry.questionId}/answers/addAnswer"
 								commandName="answer">
 								<form:input path="answer" type="text"
 									placeholder="Enter Your Answer" required="required" />
 								<form:input type="submit" value="Add Answer" path="" />
 								<br>
-							</form:form></td>
+							</form:form>
+						</td>
 					</tr>
 
 				</c:forEach>
